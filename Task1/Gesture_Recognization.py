@@ -133,7 +133,6 @@ def capture_hand_gesture():
     cv2.destroyAllWindows()
     return None
 
-
 # Function to validate and add gestures
 def validate_and_add_gesture(gesture_name, new_samples):
     new_samples = np.array(new_samples)
@@ -170,15 +169,54 @@ def update_gesture(gesture_name, new_samples):
         print(f"Gesture '{gesture_name}' not found. Adding it as a new gesture.")
         gesture_encodings[gesture_name] = new_samples
 
+# Function for real-time gesture recognition
+def real_time_gesture_recognition():
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame = cv2.flip(frame, 1)
+        h, w, _ = frame.shape
+        box_start = (w // 3, h // 3)
+        box_end = (2 * w // 3, h // 3 * 2)
+        
+        roi = frame[box_start[1]:box_end[1], box_start[0]:box_end[0]]
+        hand_detected, landmarks = detect_hand(roi)
+
+        if hand_detected:
+            vector = gesture_to_vector(roi)
+            if vector is not None:
+                name, _, confidence = recognize_gesture(vector, gesture_encodings)
+                # Display gesture name at top of box
+                text = f"{name} ({confidence:.2%})" if name else "Unknown"
+                text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2)[0]
+                text_x = box_start[0] + (box_end[0] - box_start[0] - text_size[0]) // 2  # Center text
+                text_y = box_start[1] - 10  # Position above box
+                cv2.putText(frame, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            cv2.rectangle(frame, box_start, box_end, (0, 255, 0), 2)  # Green for valid hand
+        else:
+            cv2.putText(frame, "No Hand", (box_start[0] + 10, box_start[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.rectangle(frame, box_start, box_end, (0, 0, 255), 2)  # Red for non-hand
+
+        cv2.imshow("Real-Time Gesture Recognition", frame)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
 # Main Menu Loop
 while True:
     print("\nOptions:")
     print("1. Add a new gesture")
-    print("2. Recognize a gesture")
-    print("3. Search for a gesture by name")
-    print("4. Update an existing gesture")
-    print("5. Delete a gesture")
-    print("6. List all gestures")
+    print("2. Search for a gesture by name")
+    print("3. Update an existing gesture")
+    print("4. Delete a gesture")
+    print("5. List all gestures")
+    print("6. Real-time gesture recognition")
     print("7. Exit")
 
     choice = input("Enter your choice (1/2/3/4/5/6/7): ")
@@ -202,56 +240,42 @@ while True:
             print(f"Gesture '{gesture_name}' saved successfully!")
 
     elif choice == "2":
-        roi = capture_hand_gesture()
-        if roi is not None:
-            vector = gesture_to_vector(roi)
-            if vector is not None:
-                name, _, confidence = recognize_gesture(vector, gesture_encodings)
-                if name:
-                    print(f"Recognized gesture: {name} (Confidence: {confidence:.2%})")
-                else:
-                    print("Gesture not recognized.")
-            else:
-                print("Invalid gesture. Please try again.")
-
-    elif choice == "3":
         search_name = input("Enter the name of the gesture to search: ")
         if search_name in gesture_encodings:
             print(f"Gesture '{search_name}' found.")
         else:
             print(f"Gesture '{search_name}' not found.")
 
-    elif choice == "4":
-     update_name = input("Enter the name of the gesture to update: ")
-     if update_name in gesture_encodings:
-        print(f"Updating gesture: {update_name}. Capture 5 samples for the gesture.")
-        samples = []
-        for i in range(5):
-            print(f"Capturing sample {i + 1} of 5. Press 'c' to cancel capturing.")
-            roi = capture_hand_gesture()
-            if roi is None:
-                print("Gesture capture canceled. No changes were made.")
-                break
-            vector = gesture_to_vector(roi)
-            if vector is not None:
-                samples.append(vector)
+    elif choice == "3":
+        update_name = input("Enter the name of the gesture to update: ")
+        if update_name in gesture_encodings:
+            print(f"Updating gesture: {update_name}. Capture 5 samples for the gesture.")
+            samples = []
+            for i in range(5):
+                print(f"Capturing sample {i + 1} of 5. Press 'c' to cancel capturing.")
+                roi = capture_hand_gesture()
+                if roi is None:
+                    print("Gesture capture canceled. No changes were made.")
+                    break
+                vector = gesture_to_vector(roi)
+                if vector is not None:
+                    samples.append(vector)
+                else:
+                    print(f"Sample {i + 1} was invalid. Skipping.")
+            
+            if len(samples) == 5:
+                update_gesture(update_name, samples)
+                with open(GESTURE_FILE, "wb") as f:
+                    pickle.dump(gesture_encodings, f)
+                print(f"Gesture '{update_name}' updated successfully!")
+            elif samples:
+                print(f"Partial samples captured ({len(samples)}). Update aborted.")
             else:
-                print(f"Sample {i + 1} was invalid. Skipping.")
-        
-        if len(samples) == 5:
-            # Validate and update gesture
-            update_gesture(update_name, samples)
-            with open(GESTURE_FILE, "wb") as f:
-                pickle.dump(gesture_encodings, f)
-            print(f"Gesture '{update_name}' updated successfully!")
-        elif samples:
-            print(f"Partial samples were captured but not sufficient (only {len(samples)}). Gesture update aborted.")
+                print("No valid samples captured. Update aborted.")
         else:
-            print("No valid samples captured. Gesture update aborted.")
-     else:
-        print(f"Gesture '{update_name}' not found. Please check the name or add it as a new gesture first.")
+            print(f"Gesture '{update_name}' not found.")
 
-    elif choice == "5":
+    elif choice == "4":
         delete_name = input("Enter the name of the gesture to delete: ")
         if delete_name in gesture_encodings:
             del gesture_encodings[delete_name]
@@ -261,8 +285,11 @@ while True:
         else:
             print(f"Gesture '{delete_name}' not found.")
 
-    elif choice == "6":
+    elif choice == "5":
         print("Saved gestures:", list(gesture_encodings.keys()))
+
+    elif choice == "6":
+        real_time_gesture_recognition()
 
     elif choice == "7":
         with open(GESTURE_FILE, "wb") as f:
