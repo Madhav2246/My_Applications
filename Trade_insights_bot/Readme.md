@@ -76,7 +76,7 @@ streamlit run trade_insights_gui.py
 
 | Trade Insights                      | Portfolio Analysis                 | Strategy Backtesting             |
 | ----------------------------------- | ---------------------------------- | -------------------------------- |
-| ![Trade](images/trade_insights.png) | ![Portfolio](images/Portfolio.png) | ![Backtest](images/Strategy_Backtest.png) |
+| ![Trade](images/trade_insights.png) | ![Portfolio](images/Portfolio.png) | ![Backtest](images/Stratergy_Backtest.png) |
 
 ---
 
