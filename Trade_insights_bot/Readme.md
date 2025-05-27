@@ -1,75 +1,109 @@
-🚀 Trade Insights Bot (Ultimate Edition)
+# 🚀 Trade Insights Bot (Ultimate Edition)
 
-All-in-One Trading Analytics: Real-time insights for stocks, crypto, and indices.
+A multi-agent AI-powered trading assistant that delivers **real-time insights**, **portfolio analytics**, **news sentiment**, **strategy backtesting**, and **market intelligence** using Streamlit + FastAPI + LLMs + Quant Libraries.
 
-AI-Powered Recommendations: Harnesses LLMs (Mixtral-8x7B) for trade ideas and risk analysis.
+![Preview](https://img.shields.io/badge/AI-Enabled-blueviolet?style=for-the-badge) ![Built With FastAPI](https://img.shields.io/badge/Built%20with-FastAPI-green?style=for-the-badge) ![Streamlit UI](https://img.shields.io/badge/UI-Streamlit-orange?style=for-the-badge)
 
-Beautiful, Intuitive UI: Built with Streamlit for seamless user experience.
+---
 
-News & Sentiment Analysis: Summarizes and scores market-moving news.
+## ✨ Features
 
-Economic Calendar Integration: Stay ahead with macroeconomic event tracking.
+- 📈 **Trade Insights**: Get technical + statistical analysis with actionable advice.
+- 📰 **News Sentiment Analysis**: Understand real-world sentiment using DuckDuckGo News.
+- 💼 **Portfolio Analytics**: Sharpe Ratio, Volatility, Drawdown & Risk Level.
+- 🔬 **Strategy Backtesting**: LLM-powered summary of trading strategies.
+- 🔁 **Compare Strategies**: Evaluate multiple strategies side-by-side.
+- 📊 **Sentiment History Visualization**.
+- 🧠 **LLM Integration**: Uses `Together.xyz` Mixtral-8x7B for advanced reasoning.
+- 🔧 **Feedback API** for users to rate insights and improve performance.
 
-Portfolio Analytics & Backtesting: Visualize performance, risk, and run strategy simulations.
+---
 
-Strategy Comparison: Evaluate and compare multiple trading strategies side by side.
+## 🖥️ Architecture
 
-Continuous Improvement: User feedback loop for smarter, more relevant insights.
+```
 
-🖼️ Screenshots
-<p align="center"> <img src="images/dashboard.png" alt="Dashboard Screenshot" width="700"/> <br> <i>Dashboard Overview</i> </p> <p align="center"> <img src="images/analytics.png" alt="Analytics Screenshot" width="700"/> <br> <i>Analytics & Insights</i> </p>
-🛠️ Tech Stack
-Backend: FastAPI, Python, yfinance, pandas, ta, quantstats, ffn, Together API, DuckDuckGo Search
+\[Streamlit UI] ⟷ \[FastAPI Backend] ⟷ \[Together LLM API]
+⟷ yFinance + TA-Lib + QuantStats + ffn
+⟷ DuckDuckGo Search
 
-Frontend: Streamlit
+````
 
-AI/LLM: Mixtral-8x7B (via Together API)
+---
 
-Visualization: Plotly, Matplotlib
+## 🛠️ Tech Stack
 
-🚀 Getting Started
-Prerequisites
-Python 3.9+
+- **Frontend**: Streamlit
+- **Backend**: FastAPI + httpx
+- **Finance Libraries**: yFinance, TA-Lib, QuantStats, ffn
+- **LLM**: Mixtral-8x7B-Instruct via Together API
+- **News**: DuckDuckGo Search (`duckduckgo_search`)
 
-Streamlit
+---
 
-FastAPI
+## 🚀 Run Locally
 
-All dependencies in requirements.txt
+### 1. Clone the repo
 
-Installation
-bash
+```bash
 git clone https://github.com/your-username/trade-insights-bot.git
 cd trade-insights-bot
+````
+
+### 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
-Run the App
-bash
-streamlit run app.py
-📊 Features
-Feature	Description
-Multi-Asset Analytics	Analyze stocks, crypto, and indices with advanced technical indicators.
-AI Trade Insights	Get actionable recommendations using LLMs and statistical models.
-News & Sentiment Analysis	Summarizes news, extracts sentiment, and highlights market drivers.
-Economic Calendar	Integrates macroeconomic events and alerts for smarter trading decisions.
-Portfolio Analytics	Visualizes returns, volatility, Sharpe ratio, drawdown, and risk level.
-Backtesting	Test strategies and get plain-English performance summaries.
-Strategy Comparison	Compare strategies for logic, performance, and risk.
-User Feedback Loop	Collects feedback to refine insights and user experience.
-👥 Team
-Grateful to have collaborated with an outstanding team on this project!
-Special thanks to Teammate 1, Teammate 2, and Teammate 3 for their expertise and dedication.
+```
 
-🤝 Contributing
-We welcome contributions!
+### 3. Run the FastAPI backend
 
-📄 License
-This project is licensed under the MIT License.
+```bash
+uvicorn trade_insights_bot:app --reload --port 8000
+```
 
-🔗 Useful Links
-GitHub Repo: github.com/your-username/trade-insights-bot
+### 4. Launch Streamlit GUI
 
-Issues: Report a bug or request a feature
+```bash
+streamlit run trade_insights_gui.py
+```
 
-Contact: yalamarthi.sriram123@gmail.com
+> ⚠️ Ensure your backend is running at `http://localhost:8000` for full functionality.
 
-Empowering smarter trading decisions with AI-driven analytics and beautiful, actionable insights.
+---
+
+## 📸 Screenshots
+
+| Trade Insights                      | Portfolio Analysis                 | Strategy Backtesting             |
+| ----------------------------------- | ---------------------------------- | -------------------------------- |
+| ![Trade](images/trade_insights.png) | ![Portfolio](images/portfolio.png) | ![Backtest](images/backtest.png) |
+
+---
+
+## 👥 Team
+
+* **Madhav** 
+* **Kodali Viswanath** 
+* **Sanjit Teja** 
+
+> Special thanks to all collaborators and open-source libraries that made this project possible.
+
+---
+
+## 📬 Feedback
+
+We value your feedback! Use the built-in form in the app to submit ratings, comments, and improvement suggestions.
+
+---
+
+## 📄 License
+
+MIT License - feel free to use and modify.
+
+---
+
+## 🌐 Coming Soon
+
+* Real-time trading signal integration
+* Custom strategy builder with backtest visualizations
+* Enhanced financial news clustering and risk flagging
