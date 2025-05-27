@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+httpx
+yfinance
+duckduckgo-search
+ta
+quantstats
+ffn
+streamlit
+pandas
+matplotlib
+seaborn
+IPython
+requests
